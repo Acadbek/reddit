@@ -1,7 +1,5 @@
-export function page() {
+export default function Page() {
   return (
     <div>Topic</div>
   )
 }
-
-export default page

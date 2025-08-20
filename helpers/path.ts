@@ -8,4 +8,7 @@ export const path = {
   topicSlug(slug: string, id: number) {
     return `/topic/${slug}/${id}`;
   },
+  showTopicPage(slug: string) {
+    return `/topic/${slug}`;
+  },
 };
