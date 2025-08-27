@@ -5,7 +5,7 @@ export const path = {
   topicPage(slug: string) {
     return `/topic/${slug}`;
   },
-  topicSlug(slug: string, id: number) {
+  topicSlug(slug: string, id: string) {
     return `/topic/${slug}/${id}`;
   },
   showTopicPage(slug: string) {

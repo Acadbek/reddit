@@ -1,8 +1,11 @@
-"use server";
+'use server';
 
-import { auth } from "@/auth";
-import { db } from "@/db";
-import z from "zod";
+import { auth } from '@/auth';
+import { db } from '@/db';
+import { path } from '@/helpers/path';
+import { Topic } from '@prisma/client';
+import { revalidatePath } from 'next/cache';
+import z from 'zod';
 
 interface CreatePostProps {
   error: {
@@ -22,16 +25,18 @@ export async function createPost(
   formState: CreatePostProps,
   formData: FormData
 ): Promise<CreatePostProps> {
+  let topic: any;
+
   try {
     const session = await auth();
 
     if (!session || !session.user) {
-      return { error: { _form: ["User topilmadi"] } };
+      return { error: { _form: ['User topilmadi'] } };
     }
 
     const result = createPostSchema.safeParse({
-      name: formData.get("name"),
-      content: formData.get("content"),
+      name: formData.get('name'),
+      content: formData.get('content'),
     });
 
     if (!result.success) {
@@ -40,12 +45,12 @@ export async function createPost(
       return { error };
     }
 
-    const topic = await db.topic.findFirst({
+    topic = await db.topic.findFirst({
       where: { slug: slug },
     });
 
     if (!topic) {
-      return { error: { _form: ["Something went wrong"] } };
+      return { error: { _form: ['Something went wrong'] } };
     }
 
     await db.post.create({
@@ -66,14 +71,14 @@ export async function createPost(
     } else {
       return {
         error: {
-          _form: ["Something went wroong"],
+          _form: ['Something went wroong'],
         },
       };
     }
   }
+
+  revalidatePath(path.showTopicPage(topic.slug));
   return {
     error: {},
   };
-
-  // revalidate
 }
